@@ -10,22 +10,39 @@ import * as goodsAPI from './api/goods';
 export const App: React.FC = () => {
   const [goods, setGoods] = useState<Good[]>([]);
 
-  const handleLoadAll = async () => {
-    const allGoods = await goodsAPI.getAll();
+  const [error, setError] = useState<string | null>(null);
 
-    setGoods(allGoods);
+  const handleLoadAll = async () => {
+    try {
+      const allGoods = await goodsAPI.getAll();
+
+      setGoods(allGoods);
+      setError(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to load goods');
+    }
   };
 
   const handleLoadFirstFive = async () => {
-    const fiveFirst = await goodsAPI.get5First();
+    try {
+      const fiveFirst = await goodsAPI.get5First();
 
-    setGoods(fiveFirst);
+      setGoods(fiveFirst);
+      setError(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to load goods');
+    }
   };
 
   const handleLoadRed = async () => {
-    const red = await goodsAPI.getRedGoods();
+    try {
+      const red = await goodsAPI.getRedGoods();
 
-    setGoods(red);
+      setGoods(red);
+      setError(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to load goods');
+    }
   };
 
   return (
@@ -47,6 +64,8 @@ export const App: React.FC = () => {
       <button type="button" data-cy="red-button" onClick={handleLoadRed}>
         Load red goods
       </button>
+
+      {error && <div className="error">{error}</div>}
 
       <GoodsList goods={goods} />
     </div>
